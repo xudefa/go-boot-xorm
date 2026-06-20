@@ -979,6 +979,9 @@ func (sr *SessionRepository[T]) FindAll(where any, args ...any) ([]T, error) {
 func (sr *SessionRepository[T]) Count(where any, args ...any) (int64, error) {
 	var t T
 
+	if where == nil {
+		return sr.session.Count(&t)
+	}
 	count, err := sr.session.Where(where, args...).Count(&t)
 	return count, err
 }
@@ -1172,6 +1175,9 @@ func (r *Repository[T]) Count(where any, args ...any) (int64, error) {
 		return 0, err
 	}
 
+	if where == nil {
+		return r.engine.Count(&t)
+	}
 	count, err := r.engine.Where(where, args...).Count(&t)
 	return count, err
 }
