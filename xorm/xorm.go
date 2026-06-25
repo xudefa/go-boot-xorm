@@ -576,7 +576,7 @@ func (t *Transaction) Transactor() data.Transactor {
 //   - error: 错误
 func (t *Transaction) Query(ctx context.Context, query string, args ...any) (data.Rows, error) {
 	session := t.session.Context(ctx)
-	rows, err := session.Query(convertArgs(args)...)
+	rows, err := session.Query(append([]any{query}, convertArgs(args)...)...)
 	if err != nil {
 		return nil, err
 	}
@@ -607,7 +607,7 @@ func (t *Transaction) QueryRow(ctx context.Context, query string, args ...any) d
 //   - data.Result: 执行结果
 //   - error: 错误
 func (t *Transaction) Exec(ctx context.Context, query string, args ...any) (data.Result, error) {
-	result, err := t.session.Context(ctx).Exec(convertArgs(args)...)
+	result, err := t.session.Context(ctx).Exec(append([]any{query}, convertArgs(args)...)...)
 	if err != nil {
 		return nil, err
 	}

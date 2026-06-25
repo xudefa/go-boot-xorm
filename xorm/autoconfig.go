@@ -11,8 +11,6 @@ package xorm
 import (
 	"context"
 
-	xormcore "github.com/xudefa/go-boot-xorm"
-
 	"github.com/xudefa/go-boot/actuator"
 	"github.com/xudefa/go-boot/boot"
 	"github.com/xudefa/go-boot/condition"
@@ -42,28 +40,28 @@ func (x *XormAutoConfiguration) Configure(ctx boot.ApplicationContext) error {
 	env := ctx.Environment()
 
 	dbType := env.GetString(constants.XORMType, constants.DefaultXORMType)
-	var db *xormcore.DB
+	var db *DB
 	var err error
 
-	opts := []xormcore.Option{
-		xormcore.WithHost(env.GetString(constants.XORMHost, constants.DefaultXORMHost)),
-		xormcore.WithPort(env.GetInt(constants.XORMPort, constants.DefaultXORMPort)),
-		xormcore.WithUser(env.GetString(constants.XORMUsername, constants.DefaultXORMUsername)),
-		xormcore.WithPassword(env.GetString(constants.XORMPassword, constants.DefaultXORMPassword)),
-		xormcore.WithDBName(env.GetString(constants.XORMDatabase, constants.DefaultXORMDatabase)),
-		xormcore.WithMaxOpenConns(env.GetInt(constants.XORMMaxOpenConns, constants.DefaultXORMMaxOpenConns)),
-		xormcore.WithMaxIdleConns(env.GetInt(constants.XORMMaxIdleConns, constants.DefaultXORMMaxIdleConns)),
-		xormcore.WithShowSQL(env.GetBool(constants.XORMShowSQL, constants.DefaultXORMShowSQL)),
+	opts := []Option{
+		WithHost(env.GetString(constants.XORMHost, constants.DefaultXORMHost)),
+		WithPort(env.GetInt(constants.XORMPort, constants.DefaultXORMPort)),
+		WithUser(env.GetString(constants.XORMUsername, constants.DefaultXORMUsername)),
+		WithPassword(env.GetString(constants.XORMPassword, constants.DefaultXORMPassword)),
+		WithDBName(env.GetString(constants.XORMDatabase, constants.DefaultXORMDatabase)),
+		WithMaxOpenConns(env.GetInt(constants.XORMMaxOpenConns, constants.DefaultXORMMaxOpenConns)),
+		WithMaxIdleConns(env.GetInt(constants.XORMMaxIdleConns, constants.DefaultXORMMaxIdleConns)),
+		WithShowSQL(env.GetBool(constants.XORMShowSQL, constants.DefaultXORMShowSQL)),
 	}
 	if charset := env.GetString(constants.XORMCharset, ""); charset != "" {
-		opts = append(opts, xormcore.WithCharset(charset))
+		opts = append(opts, WithCharset(charset))
 	}
 
 	switch dbType {
 	case "postgres":
-		db, err = xormcore.OpenPostgreSQL(opts...)
+		db, err = OpenPostgreSQL(opts...)
 	default:
-		db, err = xormcore.OpenMySQL(opts...)
+		db, err = OpenMySQL(opts...)
 	}
 	if err != nil {
 		panic(err)
@@ -94,4 +92,4 @@ func (x *XormAutoConfiguration) Configure(ctx boot.ApplicationContext) error {
 	return nil
 }
 
-var _ data.Transactor = (*xormcore.DB)(nil)
+var _ data.Transactor = (*DB)(nil)
